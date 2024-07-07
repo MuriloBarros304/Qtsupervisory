@@ -4,25 +4,29 @@
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QDebug>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
   Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
   
-  void tcpConnect();
 public slots:
-  void putData();
+    void putData();
+    void tcpConnect();
+    QString getIP();
+    void timerEvent(QTimerEvent *t);
+
 private:
-  Ui::MainWindow *ui;
-  QTcpSocket *socket;
+    Ui::MainWindow *ui;
+    QTcpSocket *socket;
+    int timer;
 };
 
 #endif // MAINWINDOW_H
