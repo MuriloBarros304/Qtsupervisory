@@ -9,28 +9,67 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
-    socket = new QTcpSocket(this);
     connect(ui->pushButtonConnect,
             SIGNAL(clicked(bool)),
             this,
             SLOT(tcpConnect()));
 
+    connect(ui->pushButtonStopTiming,
+            SIGNAL(clicked(bool)),
+            this,
+            SLOT(stopTiming()));
+
+    connect(ui->pushButtonStartTiming,
+            SIGNAL(clicked(bool)),
+            this,
+            SLOT(startTiming()));
+
+    connect(ui->pushButtonDisconnect,
+            SIGNAL(clicked(bool)),
+            this,
+            SLOT(tcpDisconnect()));
 }
 
 void MainWindow::tcpConnect() {
+    socket = new QTcpSocket(this);
     socket->connectToHost(getIP(),1234);
     if(socket->waitForConnected(3000)){
-        ui->textBrowserCommand->append("Connected \r\n");
-        qDebug() << "Connected";
+        qDebug() << socket->state();
+        ui->textBrowserCommand->append("Connected\r\n");
+        ui->labelStatus->setText("Connected");
     }
     else{
-        qDebug() << "Disconnected";
+        ui->textBrowserCommand->append("Failed\r\n");
     }
 }
 
-void MainWindow::putData() {
+void MainWindow::tcpDisconnect() {
+    if(socket->state() == QAbstractSocket::ConnectedState) {
+        socket->disconnectFromHost();
+        delete socket;
+        ui->textBrowserCommand->append("Disconnected\r\n");
+        ui->labelStatus->setText("Disconnected");
+    }
+    else {
+        ui->textBrowserCommand->append("You have already disconnected\r\n");
+    }
+    if(!timerIsRunning)
+        killTimer(timer);
+}
+
+void MainWindow::startTiming() {
     timer = ui->horizontalSliderTiming->value();
     timer = startTimer((timer)*1000);
+    timerIsRunning = true;
+}
+
+void MainWindow::stopTiming() {
+    killTimer(timer);
+    timerIsRunning = false;
+}
+
+void MainWindow::timerEvent(QTimerEvent *t) {
+    putData();
 }
 
 MainWindow::~MainWindow(){
@@ -44,7 +83,7 @@ QString MainWindow::getIP() {
     return ip;
 }
 
-void MainWindow::timerEvent(QTimerEvent *t) {
+void MainWindow::putData() {
     QDateTime datetime;
     QString str;
     qint64 msecdate;
@@ -53,14 +92,14 @@ void MainWindow::timerEvent(QTimerEvent *t) {
     max = ui->horizontalSliderMax->value();
     min = ui->horizontalSliderMin->value();
 
-    timer = ui->horizontalSliderTiming->value();
-    timer = startTimer((timer)*1000);
-
-    if(socket->state()== QAbstractSocket::ConnectedState){
-
+    if(min>max) {
+        ui->textBrowserCommand->append("Erro nos valores\r\n");
+        killTimer(timer);
+    }
+    if(socket->state() == QAbstractSocket::ConnectedState){
         msecdate = QDateTime::currentDateTime().toMSecsSinceEpoch();
         str = "set "+ QString::number(msecdate) + " " +
-              QString::number(rand()%(max - min) + min)+"\r\n";
+            QString::number(rand()%(max - min) + min)+"\r\n";
         ui->textBrowserCommand->append(str);
         qDebug() << str;
 
