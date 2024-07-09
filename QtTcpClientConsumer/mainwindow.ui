@@ -28,9 +28,6 @@
        <layout class="QVBoxLayout" name="verticalLayout" stretch="70,30">
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEditIP"/>
-          </item>
           <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout" stretch="50,50">
             <item>
@@ -51,6 +48,16 @@
           </item>
           <item row="2" column="0">
            <widget class="QListWidget" name="listWidgetIPs"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditIP"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QPushButton" name="pushButtonUpdate">
+            <property name="text">
+             <string>Update</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -100,7 +107,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QWidget" name="widgetPlot" native="true"/>
+       <widget class="Plotter" name="widgetPlot" native="true"/>
       </item>
      </layout>
     </item>
@@ -127,6 +134,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Plotter</class>
+   <extends>QWidget</extends>
+   <header>plotter.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

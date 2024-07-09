@@ -45,7 +45,18 @@ void MainWindow::tcpConnect() {
     }
 }
 
-
+void MainWindow::tcpDisconnect() {
+    if(socket->state() == QAbstractSocket::ConnectedState) {
+        socket->disconnectFromHost();
+        ui->textBrowserCommand->append("Disconnected\r\n");
+        ui->labelStatus->setText("Disconnected");
+    }
+    else {
+        ui->textBrowserCommand->append("You have already disconnected\r\n");
+    }
+    if(timerIsRunning)
+        killTimer(timer);
+}
 
 void MainWindow::startTiming() {
     timer = ui->horizontalSliderTiming->value();

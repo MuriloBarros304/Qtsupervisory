@@ -24,12 +24,14 @@ public slots:
     void startTiming();
     void stopTiming();
     void timerEvent(QTimerEvent *t);
+    void updateList();
 
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
     bool timerIsRunning = false;
     int timer;
+    QString pastIP;
 };
 
 #endif // MAINWINDOW_H

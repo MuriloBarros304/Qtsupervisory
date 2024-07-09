@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QDateTime>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -27,10 +28,18 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(tcpDisconnect()));
 
-    ui->horizontalSliderTiming->setValue(3);
+    connect(ui->pushButtonUpdate,
+            SIGNAL(clicked(bool)),
+            this,
+            SLOT(updateList()));
+
+    ui->horizontalSliderTiming->setValue(8);
+    pastIP = getIP();
+    ui->listWidgetIPs->addItem(getIP());
 }
 
 void MainWindow::tcpConnect() {
+    socket = new QTcpSocket(this);
     socket->connectToHost(getIP(),1234);
     if(socket->waitForConnected(3000)) {
         qDebug() << "Connected";
@@ -41,7 +50,12 @@ void MainWindow::tcpConnect() {
 }
 
 void MainWindow::tcpDisconnect() {
-
+    if(socket->state() == QAbstractSocket::ConnectedState) {
+        socket->disconnectFromHost();
+        qDebug() << "Disconnected\r\n";
+    }
+    if(timerIsRunning)
+        killTimer(timer);
 }
 
 QString MainWindow::getIP() {
@@ -63,6 +77,13 @@ void MainWindow::timerEvent(QTimerEvent *t) {
     getData();
 }
 
+void MainWindow::updateList() {
+    if(pastIP != getIP()) {
+        ui->listWidgetIPs->addItem(getIP());
+        pastIP = getIP();
+    }
+}
+
 void MainWindow::getData(){
     QString str;
     QByteArray array;
@@ -72,7 +93,9 @@ void MainWindow::getData(){
     if(socket->state() == QAbstractSocket::ConnectedState){
         if(socket->isOpen()){
             qDebug() << "reading...";
-            socket->write("get ");// + getIP() + "5\r\n");
+            socket->write("get ");
+            socket->write(getIP().toLocal8Bit());
+            socket->write(" 5\r\n");
             socket->waitForBytesWritten();
             socket->waitForReadyRead();
             qDebug() << socket->bytesAvailable();
@@ -84,7 +107,7 @@ void MainWindow::getData(){
                     str = list.at(0);
                     thetime = str.toLongLong(&ok);
                     str = list.at(1);
-                    qDebug() << thetime << ": " << str;
+                    qDebug() << thetime << ": " << str; // tempo e número
                 }
             }
         }
@@ -92,8 +115,7 @@ void MainWindow::getData(){
 }
 
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
   delete socket;
   delete ui;
 }
