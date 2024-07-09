@@ -9,20 +9,27 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
-  Q_OBJECT
+class MainWindow : public QMainWindow {
+    Q_OBJECT
 
 public:
-  explicit MainWindow(QWidget *parent = 0);
-  ~MainWindow();
-  
-  void tcpConnect();
+    explicit MainWindow(QWidget *parent = 0);
+    ~MainWindow();
+
 public slots:
-  void getData();
+    void tcpConnect();
+    void tcpDisconnect();
+    void getData();
+    QString getIP();
+    void startTiming();
+    void stopTiming();
+    void timerEvent(QTimerEvent *t);
+
 private:
-  Ui::MainWindow *ui;
-  QTcpSocket *socket;
+    Ui::MainWindow *ui;
+    QTcpSocket *socket;
+    bool timerIsRunning = false;
+    int timer;
 };
 
 #endif // MAINWINDOW_H

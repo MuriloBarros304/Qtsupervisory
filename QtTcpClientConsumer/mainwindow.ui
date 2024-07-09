@@ -6,34 +6,112 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>463</width>
-    <height>421</height>
+    <width>645</width>
+    <height>503</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Consumidor</string>
+   <string>Consumer</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButtonGet">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>60</y>
-      <width>101</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>getData</string>
-    </property>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QLabel" name="labelTextIP">
+      <property name="text">
+       <string>Server's IP</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="40,60">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="70,30">
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLineEdit" name="lineEditIP"/>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout" stretch="50,50">
+            <item>
+             <widget class="QPushButton" name="pushButtonConnect">
+              <property name="text">
+               <string>Connect</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonDisconnect">
+              <property name="text">
+               <string>Disconnect</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <widget class="QListWidget" name="listWidgetIPs"/>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,100">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelTiming">
+            <property name="text">
+             <string>Timing(s)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QSlider" name="horizontalSliderTiming">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelTimingValue">
+            <property name="text">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="50,50">
+            <item>
+             <widget class="QPushButton" name="pushButtonStart">
+              <property name="text">
+               <string>Start</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonStop">
+              <property name="text">
+               <string>Stop</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QWidget" name="widgetPlot" native="true"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>463</width>
+     <width>645</width>
      <height>23</height>
     </rect>
    </property>
@@ -50,5 +128,22 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>horizontalSliderTiming</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>labelTimingValue</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>180</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>255</x>
+     <y>393</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

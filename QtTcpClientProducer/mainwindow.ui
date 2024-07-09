@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Produtor</string>
+   <string>Producer</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -25,7 +25,7 @@
            <widget class="QLineEdit" name="lineEditIP"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="50,0,50">
             <item>
              <widget class="QPushButton" name="pushButtonConnect">
               <property name="text">
@@ -1081,6 +1081,9 @@
             </item>
             <item>
              <widget class="QSlider" name="horizontalSliderTiming">
+              <property name="maximum">
+               <number>60</number>
+              </property>
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -1096,7 +1099,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,100,0">
+           <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="50,0,50">
             <item>
              <widget class="QPushButton" name="pushButtonStartTiming">
               <property name="text">

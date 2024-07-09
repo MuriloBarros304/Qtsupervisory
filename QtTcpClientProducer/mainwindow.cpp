@@ -28,13 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
             SIGNAL(clicked(bool)),
             this,
             SLOT(tcpDisconnect()));
+
+    ui->horizontalSliderMax->setValue(35);
+    ui->horizontalSliderTiming->setValue(3);
 }
 
 void MainWindow::tcpConnect() {
     socket = new QTcpSocket(this);
     socket->connectToHost(getIP(),1234);
     if(socket->waitForConnected(3000)){
-        qDebug() << socket->state();
         ui->textBrowserCommand->append("Connected\r\n");
         ui->labelStatus->setText("Connected");
     }
@@ -43,19 +45,7 @@ void MainWindow::tcpConnect() {
     }
 }
 
-void MainWindow::tcpDisconnect() {
-    if(socket->state() == QAbstractSocket::ConnectedState) {
-        socket->disconnectFromHost();
-        delete socket;
-        ui->textBrowserCommand->append("Disconnected\r\n");
-        ui->labelStatus->setText("Disconnected");
-    }
-    else {
-        ui->textBrowserCommand->append("You have already disconnected\r\n");
-    }
-    if(!timerIsRunning)
-        killTimer(timer);
-}
+
 
 void MainWindow::startTiming() {
     timer = ui->horizontalSliderTiming->value();
@@ -78,9 +68,7 @@ MainWindow::~MainWindow(){
 }
 
 QString MainWindow::getIP() {
-    QString ip;
-    ip = ui->lineEditIP->text();
-    return ip;
+    return ui->lineEditIP->text();;
 }
 
 void MainWindow::putData() {
@@ -93,21 +81,16 @@ void MainWindow::putData() {
     min = ui->horizontalSliderMin->value();
 
     if(min>max) {
-        ui->textBrowserCommand->append("Erro nos valores\r\n");
+        ui->textBrowserCommand->append("Invalid range\r\n");
         killTimer(timer);
+        timerIsRunning = false;
     }
     if(socket->state() == QAbstractSocket::ConnectedState){
         msecdate = QDateTime::currentDateTime().toMSecsSinceEpoch();
         str = "set "+ QString::number(msecdate) + " " +
             QString::number(rand()%(max - min) + min)+"\r\n";
         ui->textBrowserCommand->append(str);
-        qDebug() << str;
-
-        qDebug() << socket->write(str.toStdString().c_str())
-                 << " bytes written";
-        if(socket->waitForBytesWritten(3000)){
-            qDebug() << "wrote";
         }
-    }
+    socket->write(str.toStdString().c_str());
 }
 
