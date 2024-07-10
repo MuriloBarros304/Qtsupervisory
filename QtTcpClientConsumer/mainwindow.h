@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTcpSocket>
 #include <QDebug>
+#include <vector>
 
 namespace Ui {
 class MainWindow;
@@ -25,13 +26,14 @@ public slots:
     void stopTiming();
     void timerEvent(QTimerEvent *t);
     void updateList();
-
+    void updateGetDataVisibility();
 private:
     Ui::MainWindow *ui;
     QTcpSocket *socket;
     bool timerIsRunning = false;
     int timer;
     QString pastIP;
+    std::vector<QString> ips;
 };
 
 #endif // MAINWINDOW_H

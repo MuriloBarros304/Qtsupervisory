@@ -33,9 +33,16 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(updateList()));
 
+    connect(ui->listWidgetIPs,
+            SIGNAL(itemSelectionChanged()),
+            this,
+            SLOT(updateGetDataVisibility()));
+
     ui->horizontalSliderTiming->setValue(8);
     pastIP = getIP();
-    ui->listWidgetIPs->addItem(getIP());
+    ui->getDataTiming->setVisible(false);
+    ui->listWidgetIPs->setSelectionBehavior(QAbstractItemView::SelectItems);
+    ui->listWidgetIPs->setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
 void MainWindow::tcpConnect() {
@@ -43,6 +50,7 @@ void MainWindow::tcpConnect() {
     socket->connectToHost(getIP(),1234);
     if(socket->waitForConnected(3000)) {
         qDebug() << "Connected";
+        ips.push_back(getIP());
     }
     else {
         qDebug() << "Disconnected";
@@ -56,10 +64,26 @@ void MainWindow::tcpDisconnect() {
     }
     if(timerIsRunning)
         killTimer(timer);
+    auto selectedItems = ui->listWidgetIPs->selectedItems();
+
+    for (auto it = ips.begin(); it != ips.end(); ) {
+        bool eraseItem = false;
+        for (auto &item : selectedItems) {
+            if (*it == item->text()) {
+                eraseItem = true;
+                break;
+            }
+        }
+        if (eraseItem) {
+            it = ips.erase(it); // Apaga o item e atualiza o iterador
+        } else {
+            ++it; // Avança o iterador
+        }
+    }
 }
 
 QString MainWindow::getIP() {
-    return ui->lineEditIP->text();;
+    return ui->lineEditIP->text();
 }
 
 void MainWindow::startTiming() {
@@ -78,9 +102,33 @@ void MainWindow::timerEvent(QTimerEvent *t) {
 }
 
 void MainWindow::updateList() {
-    if(pastIP != getIP()) {
-        ui->listWidgetIPs->addItem(getIP());
-        pastIP = getIP();
+    QString currentIP = getIP();
+    if (pastIP != currentIP) {
+        for (const auto &ip : ips) {
+            // Verifica se o item já está na lista antes de adicionar
+            bool itemExists = false;
+            for (int i = 0; i < ui->listWidgetIPs->count(); ++i) {
+                if (ui->listWidgetIPs->item(i)->text() == ip) {
+                    itemExists = true;
+                    break;
+                }
+            }
+            if (!itemExists) {
+                ui->listWidgetIPs->addItem(ip);
+            }
+        }
+        // Atualiza o pastIP com o novo IP
+        pastIP = currentIP;
+    }
+}
+
+
+void MainWindow::updateGetDataVisibility()
+{
+    if (!ui->listWidgetIPs->selectedItems().isEmpty()) {
+        ui->getDataTiming->setVisible(true);
+    } else {
+        ui->getDataTiming->setVisible(false);
     }
 }
 
@@ -90,11 +138,13 @@ void MainWindow::getData(){
     QStringList list;
     qint64 thetime;
     qDebug() << "to get data...";
+    str = ui->listWidgetIPs->selectedItems()[0]->text();
+    array = str.toLocal8Bit();
     if(socket->state() == QAbstractSocket::ConnectedState){
         if(socket->isOpen()){
             qDebug() << "reading...";
             socket->write("get ");
-            socket->write(getIP().toLocal8Bit());
+            socket->write(array);
             socket->write(" 5\r\n");
             socket->waitForBytesWritten();
             socket->waitForReadyRead();
