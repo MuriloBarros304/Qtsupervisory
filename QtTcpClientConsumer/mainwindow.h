@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow {
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    std::vector<qint64> x;
+    std::vector<int> y;
 
 public slots:
     void tcpConnect();

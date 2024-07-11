@@ -99,6 +99,7 @@ void MainWindow::stopTiming() {
 
 void MainWindow::timerEvent(QTimerEvent *t) {
     getData();
+    repaint();
 }
 
 void MainWindow::updateList() {
@@ -155,8 +156,10 @@ void MainWindow::getData(){
                 if(list.size() == 2){
                     bool ok;
                     str = list.at(0);
+                    x.push_back(thetime); // armazenar tempo no eixo x
                     thetime = str.toLongLong(&ok);
                     str = list.at(1);
+                    y.push_back(str.toInt()); // armazenar valor no eixo y
                     qDebug() << thetime << ": " << str; // tempo e número
                 }
             }
