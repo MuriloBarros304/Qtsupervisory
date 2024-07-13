@@ -15,13 +15,22 @@ void Plotter::paintEvent(QPaintEvent *event) {
     brush.setColor(QColor(255,255,100));
     brush.setStyle(Qt::SolidPattern);
 
-    pen.setColor(QColor(100,0,255));
     pen.setWidth(2);
 
     painter.setBrush(brush);
     painter.setPen(pen);
 
     painter.drawRect(0,0,width(), height());
+    pen.setColor(QColor(100,0,255));
 
-    //painter.drawLine(());
+    //painter.drawLine(
+
+}
+
+int Plotter::getX(MainWindow &x, int index) {
+
+}
+
+int Plotter::getY(MainWindow &y, int index) {
+
 }
