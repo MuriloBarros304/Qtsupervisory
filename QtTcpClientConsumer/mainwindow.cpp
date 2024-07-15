@@ -38,11 +38,12 @@ MainWindow::MainWindow(QWidget *parent) :
             this,
             SLOT(updateGetDataVisibility()));
 
-    ui->horizontalSliderTiming->setValue(8);
+    ui->horizontalSliderTiming->setValue(12);
     pastIP = getIP();
     ui->getDataTiming->setVisible(false);
     ui->listWidgetIPs->setSelectionBehavior(QAbstractItemView::SelectItems);
     ui->listWidgetIPs->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->lineEditIP->setText("127.0.0.1");
 }
 
 void MainWindow::tcpConnect() {
@@ -90,11 +91,13 @@ void MainWindow::startTiming() {
     timer = ui->horizontalSliderTiming->value();
     timer = startTimer((timer)*1000);
     timerIsRunning = true;
+    qDebug() << "Starting timer...";
 }
 
 void MainWindow::stopTiming() {
     killTimer(timer);
     timerIsRunning = false;
+    qDebug() << "Stoping timer...";
 }
 
 void MainWindow::timerEvent(QTimerEvent *t) {
@@ -130,6 +133,9 @@ void MainWindow::updateGetDataVisibility()
         ui->getDataTiming->setVisible(true);
     } else {
         ui->getDataTiming->setVisible(false);
+        if(!timerIsRunning) {
+            killTimer(timer);
+        }
     }
 }
 
@@ -138,15 +144,18 @@ void MainWindow::getData(){
     QByteArray array;
     QStringList list;
     qint64 thetime;
+    QList<int> data;
+
+    if(data.length()>30) {
+        data.erase(data.begin(),data.end());
+    }
     qDebug() << "to get data...";
     str = ui->listWidgetIPs->selectedItems()[0]->text();
     array = str.toLocal8Bit();
     if(socket->state() == QAbstractSocket::ConnectedState){
         if(socket->isOpen()){
             qDebug() << "reading...";
-            socket->write("get ");
-            socket->write(array);
-            socket->write(" 5\r\n");
+            socket->write("get " + array + " 10\r\n");
             socket->waitForBytesWritten();
             socket->waitForReadyRead();
             qDebug() << socket->bytesAvailable();
@@ -156,14 +165,14 @@ void MainWindow::getData(){
                 if(list.size() == 2){
                     bool ok;
                     str = list.at(0);
-                    x.push_back(thetime); // armazenar tempo no eixo x
                     thetime = str.toLongLong(&ok);
                     str = list.at(1);
-                    y.push_back(str.toInt()); // armazenar valor no eixo y
+                    data.append(str.toInt(&ok));
                     qDebug() << thetime << ": " << str; // tempo e número
                 }
             }
         }
+        ui->widgetPlot->updatePoints(data);
     }
 }
 

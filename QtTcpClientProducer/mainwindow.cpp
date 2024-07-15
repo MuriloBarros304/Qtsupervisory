@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->horizontalSliderMax->setValue(35);
     ui->horizontalSliderTiming->setValue(3);
+    ui->lineEditIP->setText("127.0.0.1");
 }
 
 void MainWindow::tcpConnect() {

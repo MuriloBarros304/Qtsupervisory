@@ -2,19 +2,19 @@
 #define PLOTTER_H
 
 #include <QWidget>
-#include <vector>
-#include "mainwindow.h"
 
 class Plotter : public QWidget {
     Q_OBJECT
 public:
     explicit Plotter(QWidget *parent = nullptr);
+    void paintEvent(QPaintEvent *event);
+    QList<int> points;
+signals:
 
-    int getX(MainWindow &mainWindow, int index);
-    int getY(MainWindow &mainWindow, int index);
-
-protected:
-    void paintEvent(QPaintEvent *event) override;
+public slots:
+    void updatePoints(QList<int> newPoints);
+    int getMax();
+    int getMin();
 };
 
 #endif // PLOTTER_H

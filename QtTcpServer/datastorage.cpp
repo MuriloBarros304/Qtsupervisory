@@ -26,11 +26,11 @@ vector<Entry> DataStorage::getData(QHostAddress address, unsigned int lastn){
   dataIterator = data.find(address.toIPv4Address());
   if(dataIterator != data.end()){
     if(dataIterator.value().size() <= lastn){
-      qDebug() << "passou dataiterator";
+      //qDebug() << "passou dataiterator";
       return (dataIterator.value());
     }
     else{
-      qDebug() << "entrou copy";
+      //qDebug() << "entrou copy";
       qDebug() << "size = " << dataIterator.value().size();
       qDebug() << "distance = " << distance(dataIterator.value().end()-lastn, dataIterator.value().end());
       for(vi=dataIterator.value().end()-lastn; vi!=dataIterator.value().end(); vi++){
@@ -40,7 +40,7 @@ vector<Entry> DataStorage::getData(QHostAddress address, unsigned int lastn){
      // range.reserve(distance(dataIterator.value().end()-lastn, dataIterator.value().end()));
      // std::copy(dataIterator.value().end()-lastn, dataIterator.value().end(), range.begin());
 
-      qDebug() << "passou copy = " << range.size();
+      //qDebug() << "passou copy = " << range.size();
       return (range);
     }
   }
