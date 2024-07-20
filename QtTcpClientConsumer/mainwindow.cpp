@@ -65,6 +65,7 @@ void MainWindow::tcpDisconnect() {
     }
     if(timerIsRunning)
         killTimer(timer);
+
     auto selectedItems = ui->listWidgetIPs->selectedItems();
 
     for (auto it = ips.begin(); it != ips.end(); ) {
@@ -72,11 +73,20 @@ void MainWindow::tcpDisconnect() {
         for (auto &item : selectedItems) {
             if (*it == item->text()) {
                 eraseItem = true;
+                qDebug() << "erase = true";
                 break;
             }
         }
         if (eraseItem) {
-            it = ips.erase(it); // Apaga o item e atualiza o iterador
+            // Remove o item correspondente da lista
+            for (int i = 0; i < ui->listWidgetIPs->count(); ++i) {
+                if (ui->listWidgetIPs->item(i)->text() == *it) {
+                    ui->listWidgetIPs->takeItem(i);
+                    break;
+                }
+            }
+            it = ips.erase(it); // Apaga o item da lista de IPs e atualiza o iterador
+            qDebug() << "apagou";
         } else {
             ++it; // Avança o iterador
         }
@@ -107,9 +117,20 @@ void MainWindow::timerEvent(QTimerEvent *t) {
 
 void MainWindow::updateList() {
     QString currentIP = getIP();
+    int j;
     if (pastIP != currentIP) {
+        // Remover itens que não estão na lista de IPs
+        for (int i = 0; i < ui->listWidgetIPs->count(); ++i) {
+            QListWidgetItem* item = ui->listWidgetIPs->item(i);
+            if (std::find(ips.begin(), ips.end(), item->text()) == ips.end()) {
+                ui->listWidgetIPs->takeItem(i);
+                j = i;
+                --i; // Ajustar o índice após a remoção
+                break;
+            }
+        }
+        // Adicionar novos itens à lista gráfica
         for (const auto &ip : ips) {
-            // Verifica se o item já está na lista antes de adicionar
             bool itemExists = false;
             for (int i = 0; i < ui->listWidgetIPs->count(); ++i) {
                 if (ui->listWidgetIPs->item(i)->text() == ip) {
@@ -121,6 +142,7 @@ void MainWindow::updateList() {
                 ui->listWidgetIPs->addItem(ip);
             }
         }
+
         // Atualiza o pastIP com o novo IP
         pastIP = currentIP;
     }
