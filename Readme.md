@@ -16,11 +16,10 @@ Os três módulos são:
 
 O módulo servidor é um servidor TCP que escuta na porta 1234 para conexões de clientes. Ele aceita três comandos principais:
 
-- `list`: Retorna a lista de máquinas com dados armazenados.
 - `get NUMERO_IP N_AMOSTRAS`: Recupera dados de um cliente produtor específico.
 - `set DATA_E_HORA_EM_MS DADO`: Armazena dados enviados por um cliente produtor.
 
-**Nota**: O servidor já está implementado e não requer modificações.
+![Servidor](images/server.png)
 
 ### Cliente Produtor de Dados
 
@@ -31,9 +30,7 @@ O cliente produtor deve se conectar ao servidor e enviar dados periodicamente. A
 - Conectar e enviar dados ao servidor
 - Exibir dados enviados
 
-**Exemplo de Interface:**
-
-![Produtor de Dados](Imagens/producer.png)
+![Produtor de Dados](images/producer.png)
 
 ### Cliente Supervisor de Dados
 
@@ -44,9 +41,7 @@ O cliente supervisor deve se conectar ao servidor e recuperar informações sobr
 - Selecionar uma máquina e visualizar seus dados
 - Traçar gráficos dos dados
 
-**Exemplo de Interface:**
-
-![Consumidor de Dados](Imagens/consumer.png)
+![Consumidor de Dados](images/consumer.png)
 
 ## Instalação
 
