@@ -49,7 +49,7 @@ O cliente supervisor deve se conectar ao servidor e recuperar informações sobr
 
    ```bash
 
-    git clone <URL-DO-REPOSITORIO>
+    git clone git@github.com:MuriloBarros304/Qtsupervisory.git
 
 2. **Abra o projeto no QtCreator**
 
